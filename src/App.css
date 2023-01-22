@@ -1,0 +1,13 @@
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
+.contenedor-login{
+  display: flex;
+  flex-direction: column;
+  background-color: beige;
+  width:30%;
+  height: 60%;
+  padding: 10px;
+}
