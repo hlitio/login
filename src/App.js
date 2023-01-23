@@ -22,17 +22,31 @@ const Agregar_usuario = ()=>{
   if (error) return `Submission error! ${error.message}`;
   let correo,password,idperfil
   return(
-    <div>
-      <h2>Alta de usuarios</h2>
+    <div className="contenedor-login">
+      
       <form onSubmit={async e=>{
         e.preventDefault()
         let passencryp = await bcryptjs.hash(password.value,8)
         nuevoUsuario({variables:{correo: correo.value,password: passencryp,idperfil:parseInt(idperfil.value,10)}})
-      }}>
-        <input ref={node =>{correo=node}} id="correo"></input>
-        <input ref={node =>{password=node} } type="password" id="password"></input>
-        <input ref={node=>{idperfil=node}} id="idperfil"></input>
-        <button type="submit">Agregar Usuario</button>
+      }} className="pure-form pure-form-aligned">
+         <fieldset>
+          <legend>Alta de usuarios</legend>
+          <div className= "pure-control-group">
+            <label for= "correo">Correo: </label>
+            <input ref={node =>{correo=node}} id="correo"></input>
+          </div>
+          <div className= "pure-control-group">
+            <label for= "password">Password: </label>
+            <input ref={node =>{password=node} } type="password" id="password"></input>
+          </div>
+          <div className= "pure-control-group">
+            <label for= "idperfil">IdPerfil: </label>
+            <input ref={node=>{idperfil=node}} id="idperfil"></input>
+          </div>
+          <div className= "pure-controls">
+            <button type="submit" className="pure-button pure-button-primary">Agregar Usuario</button>
+          </div>
+        </fieldset>
 
       </form>
     </div>

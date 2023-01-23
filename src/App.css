@@ -6,8 +6,9 @@
 .contenedor-login{
   display: flex;
   flex-direction: column;
+
   background-color: beige;
-  width:30%;
-  height: 60%;
+  width:30vw;
+  height: 60vh;
   padding: 10px;
 }
