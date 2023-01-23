@@ -54,6 +54,40 @@ const Agregar_usuario = ()=>{
   )
 }
 
+const Login = ()=>{
+ 
+  let correo,password,idperfil
+  return(
+    <div className="contenedor-login">
+      
+      <form onSubmit={async e=>{
+        e.preventDefault()
+        let passencryp = await bcryptjs.hash(password.value,8)
+      
+      }} className="pure-form pure-form-aligned">
+         <fieldset>
+          <legend>Login</legend>
+          <div className= "pure-control-group">
+            <label for= "correo">Correo: </label>
+            <input ref={node =>{correo=node}} id="correo"></input>
+          </div>
+          <div className= "pure-control-group">
+            <label for= "password">Password: </label>
+            <input ref={node =>{password=node} } type="password" id="password"></input>
+          </div>
+         
+          <div className= "pure-controls">
+            <button type="submit" className="pure-button pure-button-primary">Agregar Usuario</button>
+          </div>
+        </fieldset>
+
+      </form>
+    </div>
+
+  )
+}
+
+
 const client = new ApolloClient({
   uri:"http://localhost:4000/graphql"
 })
@@ -68,7 +102,7 @@ function App() {
       <div className="App">
       
         
-        <Agregar_usuario />
+        <Login />
 
       </div>
     </ApolloProvider>
