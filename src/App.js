@@ -7,7 +7,7 @@ import gql from "graphql-tag"
 
 const bcryptjs = require('bcryptjs')
 
-
+const jose = require('jose')
 
 const AGREGAR_USUARIO = gql`
 mutation($correo: String!, $password: String!, $idperfil: Int!)
@@ -56,23 +56,52 @@ const Agregar_usuario = ()=>{
 
 const Login = ()=>{
  
-  let correo,password,idperfil
+  let correo,password
+  const secret = new TextEncoder().encode(
+    'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2',
+  )
+  const alg = 'HS256'
+
   return(
     <div className="contenedor-login">
       
       <form onSubmit={async e=>{
         e.preventDefault()
         let passencryp = await bcryptjs.hash(password.value,8)
-      
+
+
+        const jwt = await new jose.SignJWT({ user:123456 })
+        .setProtectedHeader({ alg })
+        .setIssuedAt()
+        .setIssuer('urn:example:issuer')
+        .setAudience('urn:example:audience')
+        .setExpirationTime('2h')
+        .sign(secret)
+
+        console.log("Token:", jwt)
+        console.log("----------------------")
+        console.log("Verificando")
+        console.log("----------------------")
+
+        const { payload, protectedHeader } = await jose.jwtVerify(jwt, secret, {
+          issuer: 'urn:example:issuer',
+          audience: 'urn:example:audience',
+        })
+        
+        console.log(protectedHeader)
+        console.log(payload)
+
+
+        
       }} className="pure-form pure-form-aligned">
          <fieldset>
           <legend>Login</legend>
           <div className= "pure-control-group">
-            <label for= "correo">Correo: </label>
+            <label htmlFor= "correo">Correo: </label>
             <input ref={node =>{correo=node}} id="correo"></input>
           </div>
           <div className= "pure-control-group">
-            <label for= "password">Password: </label>
+            <label htmlFor= "password">Password: </label>
             <input ref={node =>{password=node} } type="password" id="password"></input>
           </div>
          
