@@ -12,7 +12,11 @@ const jose = require('jose')
 const AGREGAR_USUARIO = gql`
 mutation($correo: String!, $password: String!, $idperfil: Int!)
 {createUsuario(correo: $correo, password: $password, idperfil: $idperfil) {
-  correo
+   success
+    errors {      
+      message
+      
+    }
 }}
 `
 
@@ -107,8 +111,8 @@ const Login = ()=>{
         //console.log(protectedHeader)
         //console.log(payload)
 
-        loginUser({variables:{correo: correo.value,password:passencryp}})
-        console.log(data.usuario)
+        loginUser({variables:{correo: correo.value,password:password.value}})
+        console.log(data)
 
       }} className="pure-form pure-form-aligned">
          <fieldset>
