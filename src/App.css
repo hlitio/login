@@ -3,12 +3,11 @@
   padding: 0px;
 }
 
-.contenedor-login{
-  display: flex;
-  flex-direction: column;
-
-  background-color: beige;
-  width:30vw;
-  height: 60vh;
-  padding: 10px;
+.App{
+  background-color: red;
+  background: url(https://ssl.tzoo-img.com/images/tzoo.98779.0.844340.new-york.jpg?width=1279) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
