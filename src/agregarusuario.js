@@ -2,13 +2,15 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag"
 import { Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import VentanaModal from './ventanamodal';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const AGREGAR_USUARIO = gql`
-mutation($correo: String!, $password: String!, $idperfil: Int!)
-{createUsuario(correo: $correo, password: $password, idperfil: $idperfil) {
+mutation($correo: String!, $password: String!)
+{createUsuario(correo: $correo, password: $password) {
    success
     errors {      
       message
@@ -20,15 +22,41 @@ mutation($correo: String!, $password: String!, $idperfil: Int!)
 
 const Agregar_Usuario = ()=>{
     const[nuevoUsuario,{ data, loading, error }] = useMutation(AGREGAR_USUARIO)
+    const [showTrue, setShowTrue] = useState(false);
+    const [showFalse, setShowFalse] = useState(false);
+  
+    const navigate = useNavigate()
     
-    let correo,password,idperfil
+    
+   
+
     return(
         <div className="container d-flex justify-content-center align-items-center" style={{height:"100vh"}}>
             <div style={{width:"30%"}} className="border p-4 shadow-lg bg-white">
                 <Form onSubmit={async e=>{
                     e.preventDefault()
+                    //idperfil:parseInt(e.target.idperfil.value,10)
+                    const respuesta= await nuevoUsuario({variables:{correo: e.target.correo.value,password: e.target.password.value}})
                     
-                    nuevoUsuario({variables:{correo: e.target.correo.value,password: e.target.password.value,idperfil:parseInt(e.target.idperfil.value,10)}})
+                   
+                    if (respuesta.data.createUsuario.success) {
+                        
+                        
+                       
+                        
+                        
+                        setShowTrue(true)    
+                        setTimeout(()=>{navigate("/")}, 4000);
+                        
+                        
+
+                    }else{
+                        setShowFalse(true)
+                    }
+                    
+                    
+                    
+                    
                     }}>
 
                     
@@ -46,18 +74,19 @@ const Agregar_Usuario = ()=>{
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Contraseña"/>
                         </Form.Group>
-                        
-                        <Form.Group className="mb-3" controlId="idperfil">
-                            <Form.Label>Perfil</Form.Label>
-                            <Form.Control type="text" placeholder="Contraseña"/>
-                        </Form.Group>
+                                               
 
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" >
                             Agregar
                         </Button>                    
         
                 </Form>
+                {showTrue &&
+                <VentanaModal show={true} titulo="Mensaje" mensaje="Se creo correctamente el usuario"/>}
+                {showFalse &&
+                <VentanaModal show={true} titulo="Error .!" mensaje="No se pudo crear el usuario"/>}
             </div>
+            
       </div>
   
     )

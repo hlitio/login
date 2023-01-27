@@ -4,6 +4,9 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import VentanaModal from './ventanamodal';
+import { useContext } from "react"
+import { ContextoToken } from "./contextotoken"
 
 const LOGIN_USUARIO = gql`
 mutation($correo: String!, $password: String!){
@@ -20,9 +23,10 @@ mutation($correo: String!, $password: String!){
 const Login = ()=>{
 
     const [show, setShow] = useState(false);
+    const TOKEN = useContext(ContextoToken)
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    
+    
 
 
 
@@ -34,6 +38,7 @@ const Login = ()=>{
     if (loading) return 'Submitting...';
     if (error) return `Submission error! ${error.message}`;
    
+    
 
     return(
      
@@ -44,12 +49,14 @@ const Login = ()=>{
                     
                 onSubmit={async e=>{
                     e.preventDefault()   
-                    
-                    
+                  
                     let respuesta = await loginUser({variables:{correo: e.target.correo.value,password:e.target.password.value}})
-                    console.log(respuesta.data.login.success)
-                    console.log("Correo: " , e.target.correo.value, " Contraseña: " , e.target.password.value)
+                
+                    
                     if (respuesta.data.login.success) {
+                        
+                        TOKEN.setLlave({token:respuesta.data.login.token})
+                        console.log("El token ahora es: ", TOKEN.llave.token)
                         navigate("/mainview")
                     }else {
                         
@@ -87,18 +94,8 @@ const Login = ()=>{
                 </Form.Group>
                 
             </Form>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>ERROR !!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Datos ingresados incorrectos</Modal.Body>
-                <Modal.Footer>
-                    
-                    <Button variant="primary" onClick={handleClose}>
-                        Cerrar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <VentanaModal show={show} titulo="Error!" mensaje="Datos invalidos"/>
+            
          
         </div>
     
