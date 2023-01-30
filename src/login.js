@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation} from '@apollo/react-hooks';
 import gql from "graphql-tag"
 import { Button, Form, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,6 +7,9 @@ import { useState } from 'react';
 import VentanaModal from './ventanamodal';
 import { useContext } from "react"
 import { ContextoToken } from "./contextotoken"
+import { useLazyQuery } from '@apollo/react-hooks';
+import { useEffect } from 'react';
+
 
 const LOGIN_USUARIO = gql`
 mutation($correo: String!, $password: String!){
@@ -20,19 +23,44 @@ mutation($correo: String!, $password: String!){
 }
 `
 
+const GET_USUARIO = gql`
+query($token: String!){ 
+  getUsuario(token: $token) {
+    correo
+    password
+    idperfil
+  }
+}
+`
+
 const Login = ()=>{
 
     const [show, setShow] = useState(false);
     const TOKEN = useContext(ContextoToken)
-
     
     
-
+    const [person,results] = useLazyQuery(GET_USUARIO,
+      {
+        
+        fetchPolicy: "cache",
+        onCompleted: () => {
+        // do something
+        },
+      })
+     
+    useEffect(()=>{
+      if(results.data){
+        console.log("datos de results: ",results.data)
+      }
+    },[results])
 
 
     const navigate = useNavigate()
 
     const [loginUser,{ data, loading, error }] = useMutation(LOGIN_USUARIO)
+    
+    
+    
 
   
     if (loading) return 'Submitting...';
@@ -57,7 +85,9 @@ const Login = ()=>{
                         
                         TOKEN.setLlave({token:respuesta.data.login.token})
                         console.log("El token ahora es: ", TOKEN.llave.token)
-                        navigate("/mainview")
+                        person({variables:{token:respuesta.data.login.token}})
+                        console.log(results)
+                        //navigate("/mainview")
                     }else {
                         
                             setShow(true)
